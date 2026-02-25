@@ -387,7 +387,7 @@ input[type="range"]::-moz-range-thumb {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%);
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
     opacity: 0;
     transition: opacity var(--transition);
 }
@@ -523,7 +523,7 @@ input[type="range"]::-moz-range-thumb {
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
     animation: shimmer 1.5s infinite;
 }
 
@@ -639,16 +639,43 @@ input[type="range"]::-moz-range-thumb {
     color: var(--color-text-muted);
 }
 
+.footer-links {
+    margin-top: 6px;
+}
+
+.footer-links a {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    font-size: 12px;
+    transition: color var(--transition);
+}
+
+.footer-links a:hover {
+    color: var(--color-primary);
+}
+
 /* ========== Animations ========== */
 
 @keyframes slideIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @keyframes shimmer {
-    0%   { transform: translateX(-100%); }
-    100% { transform: translateX(100%); }
+    0% {
+        transform: translateX(-100%);
+    }
+
+    100% {
+        transform: translateX(100%);
+    }
 }
 
 /* ========== Responsive ========== */
@@ -657,21 +684,27 @@ input[type="range"]::-moz-range-thumb {
     .app {
         padding: 0 16px;
     }
+
     .header {
         padding: 28px 0 20px;
     }
+
     .logo h1 {
         font-size: 22px;
     }
+
     .main {
         grid-template-columns: 1fr;
     }
+
     .step {
         padding: 18px 14px;
     }
+
     .drop-zone {
         padding: 28px 16px;
     }
+
     .empty-state {
         padding: 40px 16px;
         min-height: 200px;
