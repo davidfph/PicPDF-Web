@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PicPDF — PDF 转图片版 PDF</title>
     <meta name="description" content="在线将 PDF 转换为图片版 PDF，文字不可选中复制。纯浏览器端处理，文件不上传到服务器。">
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -25,140 +26,124 @@
             </div>
         </header>
 
-        <!-- Main Content -->
+        <!-- Main Content: Two Column -->
         <main class="main">
-            <!-- Step 1: Upload -->
-            <section id="step-upload" class="step active">
-                <div class="step-header">
-                    <span class="step-number">1</span>
-                    <h2>选择 PDF 文件</h2>
-                </div>
+            <!-- Left Panel: Upload + Settings -->
+            <div class="panel panel-left">
+                <!-- Step 1: Upload -->
+                <section class="step">
+                    <div class="step-header">
+                        <span class="step-number">1</span>
+                        <h2>选择 PDF 文件</h2>
+                    </div>
 
-                <div id="drop-zone" class="drop-zone">
-                    <div class="drop-zone-content">
-                        <div class="drop-icon">
-                            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                <polyline points="14 2 14 8 20 8"></polyline>
-                                <line x1="12" y1="18" x2="12" y2="12"></line>
-                                <line x1="9" y1="15" x2="12" y2="12"></line>
-                                <line x1="15" y1="15" x2="12" y2="12"></line>
-                            </svg>
+                    <div id="drop-zone" class="drop-zone">
+                        <div class="drop-zone-content">
+                            <div class="drop-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                                    <line x1="9" y1="15" x2="12" y2="12"></line>
+                                    <line x1="15" y1="15" x2="12" y2="12"></line>
+                                </svg>
+                            </div>
+                            <p class="drop-text">拖拽 PDF 文件到这里</p>
+                            <p class="drop-subtext">支持选择多个文件</p>
                         </div>
-                        <p class="drop-text">拖拽 PDF 文件到这里</p>
-                        <p class="drop-subtext">或者点击选择文件</p>
+                        <input type="file" id="file-input" accept=".pdf" multiple hidden>
                     </div>
-                    <input type="file" id="file-input" accept=".pdf" hidden>
-                </div>
 
-                <!-- File Info (hidden initially) -->
-                <div id="file-info" class="file-info hidden">
-                    <div class="file-info-icon">📄</div>
-                    <div class="file-info-details">
-                        <span id="file-name" class="file-name"></span>
-                        <span id="file-meta" class="file-meta"></span>
+                    <!-- File List -->
+                    <div id="file-list" class="file-list"></div>
+                </section>
+
+                <!-- Step 2: Settings -->
+                <section class="step">
+                    <div class="step-header">
+                        <span class="step-number">2</span>
+                        <h2>转换设置</h2>
                     </div>
-                    <button id="btn-remove" class="btn-icon" title="移除文件">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="6" x2="6" y2="18"></line>
-                            <line x1="6" y1="6" x2="18" y2="18"></line>
-                        </svg>
+
+                    <div class="settings-grid">
+                        <div class="setting-item">
+                            <label for="dpi-select">输出分辨率</label>
+                            <select id="dpi-select">
+                                <option value="150">150 DPI — 快速，文件小</option>
+                                <option value="200">200 DPI — 均衡</option>
+                                <option value="300" selected>300 DPI — 高质量（推荐）</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="quality-range">图片质量 <span id="quality-value">85</span>%</label>
+                            <input type="range" id="quality-range" min="50" max="100" value="85" step="5">
+                            <div class="range-labels">
+                                <span>文件更小</span>
+                                <span>更清晰</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="btn-convert" class="btn-primary" disabled>
+                        <span class="btn-text">开始转换</span>
+                        <span class="btn-icon-arrow">→</span>
                     </button>
-                </div>
-            </section>
+                </section>
+            </div>
 
-            <!-- Step 2: Settings -->
-            <section id="step-settings" class="step">
-                <div class="step-header">
-                    <span class="step-number">2</span>
-                    <h2>转换设置</h2>
-                </div>
-
-                <div class="settings-grid">
-                    <div class="setting-item">
-                        <label for="dpi-select">输出分辨率</label>
-                        <select id="dpi-select">
-                            <option value="150">150 DPI — 快速，文件小</option>
-                            <option value="200">200 DPI — 均衡</option>
-                            <option value="300" selected>300 DPI — 高质量（推荐）</option>
-                        </select>
+            <!-- Right Panel: Progress + Results -->
+            <div class="panel panel-right">
+                <!-- Empty State -->
+                <div id="empty-state" class="empty-state">
+                    <div class="empty-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="1" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <line x1="3" y1="9" x2="21" y2="9"></line>
+                            <line x1="9" y1="21" x2="9" y2="9"></line>
+                        </svg>
                     </div>
-                    <div class="setting-item">
-                        <label for="quality-range">图片质量 <span id="quality-value">85</span>%</label>
-                        <input type="range" id="quality-range" min="50" max="100" value="85" step="5">
-                        <div class="range-labels">
-                            <span>文件更小</span>
-                            <span>更清晰</span>
+                    <p class="empty-text">转换结果将显示在这里</p>
+                    <p class="empty-subtext">选择 PDF 文件并点击开始转换</p>
+                </div>
+
+                <!-- Progress (hidden initially) -->
+                <div id="progress-section" class="progress-section hidden">
+                    <div class="step-header">
+                        <span class="step-number">3</span>
+                        <h2>转换中</h2>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar-track">
+                            <div id="progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+                        </div>
+                        <div class="progress-info">
+                            <span id="progress-text">准备中...</span>
+                            <span id="progress-percent">0%</span>
                         </div>
                     </div>
                 </div>
 
-                <button id="btn-convert" class="btn-primary" disabled>
-                    <span class="btn-text">开始转换</span>
-                    <span class="btn-icon-arrow">→</span>
-                </button>
-            </section>
-
-            <!-- Step 3: Progress -->
-            <section id="step-progress" class="step hidden">
-                <div class="step-header">
-                    <span class="step-number">3</span>
-                    <h2>转换中</h2>
-                </div>
-
-                <div class="progress-container">
-                    <div class="progress-bar-track">
-                        <div id="progress-bar" class="progress-bar-fill" style="width: 0%"></div>
+                <!-- Results (hidden initially) -->
+                <div id="result-section" class="result-section hidden">
+                    <div class="step-header">
+                        <span class="step-number done">✓</span>
+                        <h2>转换完成</h2>
                     </div>
-                    <div class="progress-info">
-                        <span id="progress-text">准备中...</span>
-                        <span id="progress-percent">0%</span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Step 4: Done -->
-            <section id="step-done" class="step hidden">
-                <div class="step-header">
-                    <span class="step-number done">✓</span>
-                    <h2>转换完成</h2>
-                </div>
-
-                <div class="done-info">
-                    <div class="done-stats">
-                        <div class="stat">
-                            <span class="stat-label">页数</span>
-                            <span id="stat-pages" class="stat-value">—</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">原始大小</span>
-                            <span id="stat-original-size" class="stat-value">—</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">输出大小</span>
-                            <span id="stat-output-size" class="stat-value">—</span>
-                        </div>
-                        <div class="stat">
-                            <span class="stat-label">耗时</span>
-                            <span id="stat-time" class="stat-value">—</span>
-                        </div>
-                    </div>
-
-                    <button id="btn-download" class="btn-primary btn-download">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    <div id="result-list" class="result-list"></div>
+                    <button id="btn-download-all" class="btn-primary btn-download hidden">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                             <polyline points="7 10 12 15 17 10"></polyline>
                             <line x1="12" y1="15" x2="12" y2="3"></line>
                         </svg>
-                        <span>下载图片版 PDF</span>
+                        <span>全部下载</span>
                     </button>
-
-                    <button id="btn-restart" class="btn-secondary">转换另一个文件</button>
+                    <button id="btn-restart" class="btn-secondary">转换更多文件</button>
                 </div>
-            </section>
+            </div>
         </main>
 
         <!-- Footer -->
@@ -171,7 +156,6 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script>
-        // 设置 pdf.js worker
         pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
     </script>
     <script src="app.js"></script>
